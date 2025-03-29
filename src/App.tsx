@@ -19,7 +19,7 @@ function App() {
       <h1 className="text-5xl font-bold my-6">ArtworkOracle</h1>
       <div className="card">
         <button
-          onClick={() => setCount((count) => count + 2)}
+          onClick={() => setCount((count) => count + 1)}
           className="mb-4 hover:bg-indigo-600 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           count is {count}
