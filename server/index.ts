@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import path from "path";
+import { randomInt } from "crypto";
 const traverson = require("traverson");
 const JsonHalAdapter = require("traverson-hal");
 
@@ -24,7 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Interfaces
 
-async function getRandomGene() {
+// Calls a random gene, and then selects a random artist that represents that gene
+async function getRandomArtistByGene() {
   try {
     artsyApi
       .newRequest()
@@ -36,12 +38,22 @@ async function getRandomGene() {
         },
       })
       .withTemplateParameters({ sample: "true" })
-      .getResource(function (error: Error | null, gene: any) {
+      .getResource(function (error: Error | null, gene: any, traversal: any) {
         if (gene && typeof gene === "object") {
-          const geneName = gene.name;
-          const artworksHref = gene._links.artworks.href;
-          console.log("Gene name:", geneName);
-          console.log("Artworks href:", artworksHref);
+          console.log("Gene name: ", gene.name);
+
+          traversal
+            .continue()
+            .follow("artists")
+            .withTemplateParameters({ gene_id: gene.id })
+            .getResource(function (error: Error | null, artists: any) {
+              const artist =
+                artists._embedded.artists[
+                  randomInt(artists._embedded.artists.length - 1)
+                ];
+
+              console.log("Random Artist: ", artist.name);
+            });
         }
       });
   } catch (err) {
@@ -50,7 +62,7 @@ async function getRandomGene() {
   }
 }
 
-getRandomGene();
+getRandomArtistByGene();
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "../../dist")));
