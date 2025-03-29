@@ -17,7 +17,9 @@
     "express": "^4.21.2",
     "helmet": "^8.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "traverson": "^8.0.3",
+    "traverson-hal": "^8.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
@@ -26,6 +28,7 @@
     "@types/node": "^22.13.14",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@types/traverson": "^6.1.2",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.19",
     "concurrently": "^9.1.2",
