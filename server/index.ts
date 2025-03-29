@@ -6,10 +6,7 @@ import path from "path";
 import { randomInt } from "crypto";
 const traverson = require("traverson");
 const JsonHalAdapter = require("traverson-hal");
-
-// Register the HAL adapter
-traverson.registerMediaType(JsonHalAdapter.mediaType, JsonHalAdapter);
-const artsyApi = traverson.from("https://api.artsy.net/api").jsonHal();
+import Anthropic from "@anthropic-ai/sdk";
 
 // Load environment variables
 dotenv.config();
@@ -23,7 +20,36 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Interfaces
+// Register the HAL adapter and set Artsy API
+traverson.registerMediaType(JsonHalAdapter.mediaType, JsonHalAdapter);
+const artsyApi = traverson.from("https://api.artsy.net/api").jsonHal();
+
+// Configure Anthropic connection
+const claude = new Anthropic();
+
+// Claude Test
+async function testClaude() {
+  const msg = await claude.messages.create({
+    model: "claude-3-7-sonnet-20250219",
+    max_tokens: 1000,
+    temperature: 1,
+    system: "Respond only with short poems.",
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: "Why is the ocean salty?",
+          },
+        ],
+      },
+    ],
+  });
+  console.log(msg);
+}
+
+testClaude().catch(console.error);
 
 // Calls a random gene, and then selects a random artist that represents that gene
 async function getRandomArtistByGene() {
