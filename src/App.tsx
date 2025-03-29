@@ -22,6 +22,12 @@ function App() {
           onClick={() => setCount((count) => count + 1)}
           className="mb-4 hover:bg-indigo-600 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
+          countz is {count}
+        </button>
+        <button
+          onClick={() => setCount((count) => count + 2)}
+          className="mb-4 hover:bg-indigo-600 active:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
           count is {count}
         </button>
         <p className="mt-4 text-lg">
