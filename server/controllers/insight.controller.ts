@@ -21,6 +21,15 @@ export const getRandomInsight = async (
     // Get random gene and artist
     const data: ArtsyData = await artsyService.getRandomGeneAndArtist();
 
+    if (
+      !data ||
+      !data.artists ||
+      !data.artists._embedded ||
+      !data.artists._embedded.artists.length
+    ) {
+      throw new HttpError(404, "No artists found for the selected gene");
+    }
+
     // Selects random artist from ArtistsByGeneResponse
     const randomIndex = randomInt(0, data.artists._embedded.artists.length - 1);
     const artist: ArtistResponse = data.artists._embedded.artists[randomIndex];
@@ -41,6 +50,14 @@ export const getRandomInsight = async (
       data: response,
     });
   } catch (error) {
+    if (error.response?.status === 401) {
+      throw new HttpError(401, "Authentication with Artsy API failed");
+    } else if (error.response?.status === 429) {
+      throw new HttpError(429, "Rate limit exceeded for Artsy API");
+    } else if (error.response?.status === 503) {
+      return next(new HttpError(503, "Artsy API is currently unavailable"));
+    }
+
     next(error); // Pass to error handler middleware
   }
 };
