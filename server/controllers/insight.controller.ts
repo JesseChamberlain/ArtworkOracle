@@ -50,14 +50,5 @@ export const getRandomInsight = async (
       data: response,
     });
   } catch (error) {
-    if (error.response?.status === 401) {
-      throw new HttpError(401, "Authentication with Artsy API failed");
-    } else if (error.response?.status === 429) {
-      throw new HttpError(429, "Rate limit exceeded for Artsy API");
-    } else if (error.response?.status === 503) {
-      return next(new HttpError(503, "Artsy API is currently unavailable"));
-    }
-
-    next(error); // Pass to error handler middleware
-  }
+    next(error);
 };
