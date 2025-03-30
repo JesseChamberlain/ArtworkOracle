@@ -50,5 +50,6 @@ export const getRandomInsight = async (
       data: response,
     });
   } catch (error) {
-    next(error);
+    next(error); // Pass to error handler middleware
+  }
 };
