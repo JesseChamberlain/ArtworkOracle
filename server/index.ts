@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import path from "path";
-import { randomInt } from "crypto";
 
 // /server/ files
 import { environment, validateEnvironment } from "./config/environment";
@@ -28,26 +27,26 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Claude call with gene and artist
-async function getClaudeInsight(geneName: string, artistName: string) {
-  const message: AnthropicMessageResponse =
-    await anthropicService.getArtInsight(geneName, artistName);
-  console.log("Claude insight: ", message.content[0].text);
-}
+// // Claude call with gene and artist
+// async function getClaudeInsight(geneName: string, artistName: string) {
+//   const message: AnthropicMessageResponse =
+//     await anthropicService.getArtInsight(geneName, artistName);
+//   console.log("Claude insight: ", message.content[0].text);
+// }
 
-// Calls a random gene, and then selects a random artist that represents that gene
-async function getRandomArtistByGene() {
-  const data: ArtsyData = await artsyService.getRandomGeneAndArtist();
+// // Calls a random gene, and then selects a random artist that represents that gene
+// async function getRandomArtistByGene() {
+//   const data: ArtsyData = await artsyService.getRandomGeneAndArtist();
 
-  // Selects random artist from ArtistsByGeneResponse
-  const randomIndex = randomInt(0, data.artists._embedded.artists.length - 1);
-  const artist: ArtistResponse = data.artists._embedded.artists[randomIndex];
-  console.log(`Gene: ${data.gene.name}, Artist: ${artist.name}`);
+//   // Selects random artist from ArtistsByGeneResponse
+//   const randomIndex = randomInt(0, data.artists._embedded.artists.length - 1);
+//   const artist: ArtistResponse = data.artists._embedded.artists[randomIndex];
+//   console.log(`Gene: ${data.gene.name}, Artist: ${artist.name}`);
 
-  getClaudeInsight(data.gene.name, artist.name);
-}
+//   getClaudeInsight(data.gene.name, artist.name);
+// }
 
-getRandomArtistByGene();
+// getRandomArtistByGene();
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "../../dist")));
