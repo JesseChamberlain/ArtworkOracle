@@ -2,10 +2,11 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import path from "path";
+import { randomInt } from "crypto";
 
 // /server/ files
 import { environment, validateEnvironment } from "./config/environment";
-import { ArtsyData } from "./types/artsy.types";
+import { ArtsyData, ArtistResponse } from "./types/artsy.types";
 import { AnthropicMessageResponse } from "./types/anthropic.types";
 import { artsyService } from "./services/artsy.service";
 import { anthropicService } from "./services/anthropic.service";
@@ -37,8 +38,13 @@ async function getClaudeInsight(geneName: string, artistName: string) {
 // Calls a random gene, and then selects a random artist that represents that gene
 async function getRandomArtistByGene() {
   const data: ArtsyData = await artsyService.getRandomGeneAndArtist();
-  console.log(`Gene: ${data.gene.name}, Artist: ${data.artist.name}`);
-  getClaudeInsight(data.gene.name, data.artist.name);
+
+  // Selects random artist from ArtistsByGeneResponse
+  const randomIndex = randomInt(0, data.artists._embedded.artists.length - 1);
+  const artist: ArtistResponse = data.artists._embedded.artists[randomIndex];
+  console.log(`Gene: ${data.gene.name}, Artist: ${artist.name}`);
+
+  getClaudeInsight(data.gene.name, artist.name);
 }
 
 getRandomArtistByGene();

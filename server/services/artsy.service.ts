@@ -1,8 +1,6 @@
-import { randomInt } from "crypto";
 import { environment } from "../config/environment";
 import {
   GeneResponse,
-  ArtistResponse,
   ArtistsByGeneResponse,
   ArtsyData,
 } from "../types/artsy.types";
@@ -58,28 +56,19 @@ class ArtsyService {
                   qs: { gene_id: gene.id },
                 })
                 .getResource(
-                  (error: Error | null, response: ArtistsByGeneResponse) => {
+                  (error: Error | null, artists: ArtistsByGeneResponse) => {
                     if (error) {
                       return reject(error);
                     }
 
-                    if (!response || !response._embedded.artists.length) {
+                    if (!artists || !artists._embedded.artists.length) {
                       return reject(
                         new Error("No artists found for this gene"),
                       );
                     }
 
-                    // Selects random artist from ArtistsByGeneResponse
-                    const randomIndex = randomInt(
-                      0,
-                      response._embedded.artists.length - 1,
-                    );
-                    const artist: ArtistResponse =
-                      response._embedded.artists[randomIndex];
-
-                    // Return the gene and artist as an ArstyData type
-                    console.log(`Gene: ${gene.name}, Artist: ${artist.name}`);
-                    resolve({ gene, artist });
+                    // Return the gene and artists as an ArstyData type
+                    resolve({ gene, artists });
                   },
                 );
             },
