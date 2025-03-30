@@ -75,7 +75,7 @@ export interface ArtistsByGeneResponse {
 }
 
 // For sharing between services
-export interface ArtistGeneData {
+export interface ArtsyData {
   gene: GeneResponse;
   artist: ArtistResponse;
 }
