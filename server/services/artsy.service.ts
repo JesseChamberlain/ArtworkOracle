@@ -78,11 +78,8 @@ class ArtsyService {
                       response._embedded.artists[randomIndex];
 
                     // Return the gene and artist as an ArstyData type
-                    const artsyData: ArtsyData = { gene, artist };
-                    console.log(
-                      `Gene: ${artsyData.gene.name}, Artist: ${artsyData.artist.name}`,
-                    );
-                    resolve(artsyData);
+                    console.log(`Gene: ${gene.name}, Artist: ${artist.name}`);
+                    resolve({ gene, artist });
                   },
                 );
             },
