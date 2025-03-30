@@ -2,19 +2,11 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import path from "path";
-import { randomInt } from "crypto";
-const traverson = require("traverson");
-const JsonHalAdapter = require("traverson-hal");
 import Anthropic from "@anthropic-ai/sdk";
 
 import { environment, validateEnvironment } from "./config/environment";
 import { AnthropicMessageResponse } from "./types/anthropic.types";
-import {
-  GeneResponse,
-  ArtistResponse,
-  ArtistsByGeneResponse,
-  ArtsyData,
-} from "./types/artsy.types";
+import { ArtsyData } from "./types/artsy.types";
 import { artsyService } from "./services/artsy.service";
 
 // Validate environment variables
@@ -33,10 +25,6 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Register the HAL adapter and set Artsy API
-traverson.registerMediaType(JsonHalAdapter.mediaType, JsonHalAdapter);
-const artsyApi = traverson.from(environment.artsyBaseUrl).jsonHal();
 
 // Configure Anthropic connection
 const claude = new Anthropic();
@@ -77,47 +65,6 @@ async function claudeWithContext(gene: string, artistName: string) {
 async function getRandomArtistByGene() {
   const data: ArtsyData = await artsyService.getRandomGeneAndArtist();
   claudeWithContext(data.gene.name, data.artist.name);
-  // try {
-  //   artsyApi
-  //     .newRequest()
-  //     .follow("genes")
-  //     .withRequestOptions({
-  //       headers: {
-  //         "X-Xapp-Token": environment.artsyToken,
-  //         Accept: "application/vnd.artsy-v2+json",
-  //       },
-  //     })
-  //     .withTemplateParameters({ sample: "true" })
-  //     .getResource(function (
-  //       error: Error | null,
-  //       gene: GeneResponse,
-  //       traversal: any,
-  //     ) {
-  //       if (gene) {
-  //         console.log("Gene name: ", gene.name);
-
-  //         traversal
-  //           .continue()
-  //           .follow("artists")
-  //           .withTemplateParameters({ gene_id: gene.id })
-  //           .getResource(function (
-  //             error: Error | null,
-  //             artists: ArtistsByGeneResponse,
-  //           ) {
-  //             const artist =
-  //               artists._embedded.artists[
-  //                 randomInt(artists._embedded.artists.length - 1)
-  //               ];
-
-  //             console.log("Random Artist: ", artist.name);
-  //             claudeWithContext(gene.name, artist.name);
-  //           });
-  //       }
-  //     });
-  // } catch (err) {
-  //   console.error("Failed to connect to Artsy:", err);
-  //   process.exit(1);
-  // }
 }
 
 getRandomArtistByGene();
